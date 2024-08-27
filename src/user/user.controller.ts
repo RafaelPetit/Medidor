@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { CreateUserDto, PartialUserDto, ResponseUserDto, UserDto } from './dto/User.dto';
 import { UserService } from './user.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateUserDto, PartialUserDto, ResponseUserDto, UserDto } from './dto/User.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -60,4 +60,5 @@ export class UserController {
     @Param('id') id: number,
   ): Promise<ResponseUserDto> {
       return await this.userService.delete(+id);
+}
 }

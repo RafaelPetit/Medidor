@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/misc/prisma/prisma.service';
 import { $Enums, User } from '@prisma/client';
-import { PartialUserDto, ResponseUserDto, UserDto } from '../dto/User.dto';
+import { PartialUserDto, ResponseUserDto, UserDto } from '../u/User.dto';
 import { parseSearchToPrisma } from 'src/misc/helpers/search.helper';
 
 @Injectable()
@@ -13,8 +13,8 @@ export class UserRepository {
     const responseUserDto: ResponseUserDto = {
       id: finalUser.id,
       name: finalUser.name,
-      customerCode: finalUser.customerCode,
-      createdAt: finalUser.createdAt,
+      customerCode: finalUser.customer_code,
+      createdAt: finalUser.created_at,
     };
     return responseUserDto;
   }
