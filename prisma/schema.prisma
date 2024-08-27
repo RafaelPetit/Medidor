@@ -8,33 +8,31 @@ datasource db {
 }
 
 model User {
-  id          Int          @id @default(autoincrement())
-  customerCode String       @unique
-  name        String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  measurements Measurement[]
-  status Status
+  id              Int          @id @default(autoincrement())
+  name            String
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  status          Status
+  measures        Measure[]
 }
 
-model Measurement {
-  id             Int       @id @default(autoincrement())
-  value          Int
-  measurementDatetime DateTime
-  imageUrl       String
-  confirmed      Boolean   @default(false)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  userId         Int
-  user           User      @relation(fields: [userId], references: [id])
-  measurementType MeasurementType
-  status Status
+model Measure {
+  id               Int           @id @default(autoincrement())
+  measure_uuid     String        @unique @default(uuid())
+  measure_datetime DateTime
+  measure_value    Float
+  has_confirmed    Boolean       @default(false)
+  image_url        String
+  measure_type     Measure_Type
+  status           Status
+  customer_code    Int
+  user             User          @relation(fields: [customer_code], references: [id])
 
-  @@index([userId, measurementType, measurementDatetime], name: "user_measurement_unique")
-  @@unique([userId, measurementType, measurementDatetime])
+  @@index([customer_code, measure_type, measure_datetime], name: "customer_code_measure_unique")
+  @@unique([customer_code, measure_type, measure_datetime])
 }
 
-enum MeasurementType {
+enum Measure_Type {
   WATER
   GAS
 }
