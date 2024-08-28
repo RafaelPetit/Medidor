@@ -21,18 +21,19 @@ export class MeasureService {
   async upload(
     uploadMeasureDto: UploadMeasureDto,
   ): Promise<ResponseMeasureDto> {
-
-    const geminiResponse = await this.geminiService.analyzeImage(uploadMeasureDto.image);
+    const geminiResponse = await this.geminiService.analyzeImage(
+      uploadMeasureDto.image,
+    );
 
     const createMeasureDto: CreateMeasureDto = {
-      ...uploadMeasureDto,
+      customer_code: uploadMeasureDto.customer_code,
+      measure_datetime: uploadMeasureDto.measure_datetime,
+      measure_type: uploadMeasureDto.measure_type,
       measure_value: geminiResponse.measure_value,
       image_url: geminiResponse.image_url,
     };
 
-    console.log('create measure dto -> '+ createMeasureDto)
-    console.log('germini response -> ' + geminiResponse) 
-    
+
     const persistMeasure = await this.create(createMeasureDto);
 
     const responseMeasureDto: ResponseMeasureDto = {
@@ -41,14 +42,12 @@ export class MeasureService {
       measure_uuid: persistMeasure.measure_uuid,
     };
 
-
     return responseMeasureDto;
   }
 
-
-  async create(uploadMeasureDto: UploadMeasureDto) {
+  async create(createMeasureDto: CreateMeasureDto) {
     const measureToInstance = this.mapperService.toInstance(
-      uploadMeasureDto,
+      createMeasureDto,
       this.entity,
     );
     return await this.measureRepository.create(measureToInstance);

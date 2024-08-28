@@ -21,11 +21,6 @@ export class UploadMeasureDto {
 }
 
 export class CreateMeasureDto {
-  @IsString({ message: 'image must be a string' })
-  @IsNotEmpty({ message: 'image must not be empty ' })
-  @IsBase64()
-  image: string;
-
   @IsString({ message: 'customerCode must be a string' })
   @IsNotEmpty({ message: 'customerCode must not be empty ' })
   customer_code: string;
