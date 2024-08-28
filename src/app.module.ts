@@ -4,14 +4,19 @@ import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { UserRepository } from './user/repository/user.repository';
-import { MeasurementModule } from './measurement/measurement.module';
+import { MeasurementModule } from './measure/measure.module';
 import { GeminiModule } from './gemini/gemini.module';
-import { DeminiService } from './demini/demini.service';
-import { ValidatorModule } from './validator/validator.module';
+import { ValidatorModule } from './misc/validator/validator.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UserModule, MeasurementModule, GeminiModule, ValidatorModule],
+  imports: [
+    ConfigModule.forRoot(),
+    UserModule,
+    MeasurementModule,
+    GeminiModule,
+    ValidatorModule,
+  ],
   controllers: [UserController],
-  providers: [UserRepository, DeminiService],
+  providers: [UserRepository, GeminiModule],
 })
 export class AppModule {}

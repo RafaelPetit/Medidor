@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { GeminiService } from 'src/gemini/gemini.service';
-import { MeasurementRepository } from './repository/measurement.repository';
+import { MeasurementRepository } from './repository/measure.repository';
 import { ResponseMeasureDto, UploadMeasureDto } from './dto/measurement.dto';
 import { Measure, Measure_Type } from '@prisma/client';
 import { ClassConstructor } from 'class-transformer';
@@ -13,13 +13,12 @@ import { validatorService } from 'src/misc/validator/validator.service';
 
 @Injectable()
 export class MeasurementService {
-  
   private readonly entity: ClassConstructor<Measure>;
   constructor(
     private readonly measurementRepository: MeasurementRepository,
     private readonly geminiService: GeminiService,
     private readonly mapperService: MapperService,
-    private readonly validatorService: validatorService
+    private readonly validatorService: validatorService,
   ) {}
 
   async upload(
@@ -34,10 +33,11 @@ export class MeasurementService {
     const createProduct = await this.create(uploadMeasureDto);
 
     const responseMeasureDto: ResponseMeasureDto = {
-      image_url: geminiResult.imageUrl,
-      measure_value: geminiResult.measureValue,
+      image_url: geminiResult.image_url,
+      measure_value: geminiResult.measure_value,
       measure_uuid: createProduct.measure_uuid,
     };
+    
     return responseMeasureDto;
   }
 
@@ -50,6 +50,6 @@ export class MeasurementService {
   }
 
   async findByMonth(measure_datetime: string, measure_type: Measure_Type) {
-    return await this.findByMonth(measure_datetime, measure_type)
+    return await this.findByMonth(measure_datetime, measure_type);
   }
 }

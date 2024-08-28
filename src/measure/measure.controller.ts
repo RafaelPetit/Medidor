@@ -9,7 +9,7 @@ import {
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
-import { MeasurementService } from './measurement.service';
+import { MeasurementService } from './measure.service';
 import { UploadMeasureDto } from './dto/measurement.dto';
 
 @Controller('measurement')
@@ -18,7 +18,7 @@ export class MeasurementController {
 
   @Post('upload')
   async create(@Body() uploadMeasureDto: UploadMeasureDto) {
-    return await this.measurementService.upload(uploadMeasureDto)
+    return await this.measurementService.upload(uploadMeasureDto);
   }
 
   // @Patch('confirm')
@@ -48,6 +48,4 @@ export class MeasurementController {
   // remove(@Param('id') id: string) {
   //   return this.measurementService.remove(+id);
   // }
-
-
 }
