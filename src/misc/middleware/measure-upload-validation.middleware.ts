@@ -10,39 +10,35 @@ import { UploadMeasureDto } from 'src/dto/measure.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
-export class MeasureValidationMiddleware implements NestMiddleware {
+export class MeasureUploadValidationMiddleware implements NestMiddleware {
   constructor(private readonly prisma: PrismaService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     const uploadMeasureDto: UploadMeasureDto = req.body;
 
-    // Validate Base64 Image
     if (!this.isValidBase64(uploadMeasureDto.image)) {
       throw new BadRequestException({
         error_code: 'INVALID_DATA',
-        error_description: 'Invalid base64 image data',
+        error_description: 'imagem base64 não é valida',
       });
     }
 
-    // Validate Measure Datetime
     if (!this.isValidDate(uploadMeasureDto.measure_datetime)) {
       throw new BadRequestException({
         error_code: 'INVALID_DATA',
-        error_description: 'Invalid measure_datetime',
+        error_description: 'measure_datetime fornecido não é valido',
       });
     }
 
-    // Validate Measure Type
     if (
       !['WATER', 'GAS'].includes(uploadMeasureDto.measure_type.toUpperCase())
     ) {
       throw new BadRequestException({
         error_code: 'INVALID_DATA',
-        error_description: 'Invalid measure_type. It must be "WATER" or "GAS".',
+        error_description: 'measure_type fornecido inválido. campo tem que ser "WATER" ou "GAS".',
       });
     }
 
-    // Check for Existing Measures
     if (await this.existingMeasure(uploadMeasureDto)) {
       throw new ConflictException({
         error_code: 'DOUBLE_REPORT',
@@ -50,7 +46,6 @@ export class MeasureValidationMiddleware implements NestMiddleware {
       });
     }
 
-    // Pass the validation, continue to the next middleware/controller
     next();
   }
 

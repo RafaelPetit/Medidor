@@ -6,7 +6,8 @@ import { PrismaModule } from './misc/prisma/prisma.module';
 import { AppController } from './app.controller';
 import { GeminiModule } from './gemini/gemini.module';
 import { MapperModule } from './misc/mapper/mapper.module';
-import { MeasureValidationMiddleware } from './misc/middleware/measure-validate.middleware';
+import { MeasureUploadValidationMiddleware } from './misc/middleware/measure-upload-validation.middleware';
+import { MeasureConfirmValidationMiddleware } from './misc/middleware/measure-confirm-validation';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MeasureValidationMiddleware } from './misc/middleware/measure-validate.
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(MeasureValidationMiddleware).forRoutes('upload'); // Ajuste conforme necessário
+    consumer.apply(MeasureUploadValidationMiddleware).forRoutes('/upload');
+    consumer.apply(MeasureConfirmValidationMiddleware).forRoutes('/confirm');
   }
 }
