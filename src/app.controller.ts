@@ -8,7 +8,6 @@ export class AppController {
 
     @Post('upload')
     async upload (@Body() uploadMeasureDto: UploadMeasureDto) {
-    //    return console.log(uploadMeasureDto.image)
         return await this.measureService.upload(uploadMeasureDto)
     }
 }

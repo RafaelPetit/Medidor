@@ -3,7 +3,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { GeminiService } from 'src/gemini/gemini.service';
-import { ResponseMeasureDto, UploadMeasureDto } from '../dto/measure.dto';
+import { CreateMeasureDto, ResponseMeasureDto, UploadMeasureDto } from '../dto/measure.dto';
 import { Measure, } from '@prisma/client';
 import { ClassConstructor } from 'class-transformer';
 import { MapperService } from 'src/misc/mapper/mapper.service';
@@ -22,20 +22,29 @@ export class MeasureService {
     uploadMeasureDto: UploadMeasureDto,
   ): Promise<ResponseMeasureDto> {
 
-    const geminiResult = await this.geminiService.analyzeImage(
-      uploadMeasureDto.image,
-    );
+    const geminiResponse = await this.geminiService.analyzeImage(uploadMeasureDto.image);
 
-    const PersistMeasure = await this.create(uploadMeasureDto);
+    const createMeasureDto: CreateMeasureDto = {
+      ...uploadMeasureDto,
+      measure_value: geminiResponse.measure_value,
+      image_url: geminiResponse.image_url,
+    };
+
+    console.log('create measure dto -> '+ createMeasureDto)
+    console.log('germini response -> ' + geminiResponse) 
+    
+    const persistMeasure = await this.create(createMeasureDto);
 
     const responseMeasureDto: ResponseMeasureDto = {
-      image_url: geminiResult.image_url,
-      measure_value: geminiResult.measure_value,
-      measure_uuid: PersistMeasure.measure_uuid,
+      image_url: geminiResponse.image_url,
+      measure_value: geminiResponse.measure_value,
+      measure_uuid: persistMeasure.measure_uuid,
     };
+
 
     return responseMeasureDto;
   }
+
 
   async create(uploadMeasureDto: UploadMeasureDto) {
     const measureToInstance = this.mapperService.toInstance(

@@ -1,40 +1,51 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Injectable } from '@nestjs/common';
-import { ResponseMeasureDto } from 'src/dto/measure.dto';
+import { ResponseMeasureDto, UploadMeasureDto } from 'src/dto/measure.dto';
 
 @Injectable()
 export class GeminiService {
   private readonly genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
-  // private readonly fs = require('fs');
-
-  // async fileToGenerativePart(image, mimeType) {
-  //   return {
-  //     inlineData: {
-  //       data: image,
-  //       mimeType,
-  //     },
-  //   };
-  // }
+  async fileToGenerativePart(image, mimeType) {
+    return {
+      inlineData: {
+        data: image,
+        mimeType,
+      },
+    };
+  }
 
   async analyzeImage(image: string) {
-    const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' ,
+      generationConfig: { responseMimeType: "application/json" }});
 
-    const prompt =
-      'I need you to extract the value and return as measurement_value and also create a temporary link for the image as imagem_url';
+    const prompt = `
+      Você vai receber uma imagem contendo um recibo ou fatura. Sua tarefa é:
 
-    // const  imageParts = await this.fileToGenerativePart(image, "image/png")
+      1. **Extrair o valor da conta** da imagem (o valor monetário que aparece no recibo).
+      2. **Gerar um link temporário para a imagem**, para que ela possa ser visualizada posteriormente.
+      3. **Retornar um objeto JSON** no seguinte formato:
 
-    const result = await model.generateContent([prompt, image]);
-    const response = result.response;
-    const text = response.text();
-    console.log(text);
+      { 
+          "image_url": { "type": "string" },
+          "measure_value: {"type": "float" }
+      };
 
-    const responseMeasureDto: ResponseMeasureDto = {
-      image_url: 'asdas',
-      measure_value: 23232.57,
-    };
+      ### Observações:
 
-    return responseMeasureDto;
+      - **Não altere o formato do JSON.**
+      - **Extraia apenas o valor monetário principal da conta, sem códigos adicionais.**
+      - **Assegure-se de que o link gerado para a imagem seja acessível.**
+      `;
+
+      const imageParts = await this.fileToGenerativePart(image, 'image/jpeg');
+
+    const result = await model.generateContent([prompt, imageParts]);
+    const text = result.response.text();
+
+    const responseMeasureDto: ResponseMeasureDto = JSON.parse(text)
+
+    console.log(responseMeasureDto)
+    return responseMeasureDto
   }
 }
