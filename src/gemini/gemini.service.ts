@@ -1,7 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { Injectable, HttpException } from '@nestjs/common';
-import axios from 'axios';
-import { ResponseMeasureDto } from 'src/measure/dto/measurement.dto';
+import { Injectable } from '@nestjs/common';
+import { ResponseMeasureDto } from 'src/dto/measure.dto';
 
 @Injectable()
 export class GeminiService {
@@ -21,7 +20,8 @@ export class GeminiService {
   async analyzeImage(image: string) {
     const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    const prompt = "I need you to extract the value and return as measurement_value and also create a temporary link for the image as imagem_url"
+    const prompt =
+      'I need you to extract the value and return as measurement_value and also create a temporary link for the image as imagem_url';
 
     // const  imageParts = await this.fileToGenerativePart(image, "image/png")
 
@@ -31,10 +31,10 @@ export class GeminiService {
     console.log(text);
 
     const responseMeasureDto: ResponseMeasureDto = {
-      image_url: "asdas",
-      measure_value: 23232.57
-    }
+      image_url: 'asdas',
+      measure_value: 23232.57,
+    };
 
-    return responseMeasureDto
+    return responseMeasureDto;
   }
 }

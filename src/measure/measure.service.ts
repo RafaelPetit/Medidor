@@ -1,43 +1,39 @@
 import {
   Injectable,
-  ConflictException,
   BadRequestException,
 } from '@nestjs/common';
 import { GeminiService } from 'src/gemini/gemini.service';
-import { MeasurementRepository } from './repository/measure.repository';
-import { ResponseMeasureDto, UploadMeasureDto } from './dto/measurement.dto';
-import { Measure, Measure_Type } from '@prisma/client';
+import { ResponseMeasureDto, UploadMeasureDto } from '../dto/measure.dto';
+import { Measure, } from '@prisma/client';
 import { ClassConstructor } from 'class-transformer';
 import { MapperService } from 'src/misc/mapper/mapper.service';
-import { validatorService } from 'src/misc/validator/validator.service';
+import { MeasureRepository } from './repository/measure.repository';
 
 @Injectable()
-export class MeasurementService {
+export class MeasureService {
   private readonly entity: ClassConstructor<Measure>;
   constructor(
-    private readonly measurementRepository: MeasurementRepository,
+    private readonly measureRepository: MeasureRepository,
     private readonly geminiService: GeminiService,
     private readonly mapperService: MapperService,
-    private readonly validatorService: validatorService,
   ) {}
 
   async upload(
     uploadMeasureDto: UploadMeasureDto,
   ): Promise<ResponseMeasureDto> {
-    await this.validatorService.validateMeasureData(uploadMeasureDto);
 
     const geminiResult = await this.geminiService.analyzeImage(
       uploadMeasureDto.image,
     );
 
-    const createProduct = await this.create(uploadMeasureDto);
+    const PersistMeasure = await this.create(uploadMeasureDto);
 
     const responseMeasureDto: ResponseMeasureDto = {
       image_url: geminiResult.image_url,
       measure_value: geminiResult.measure_value,
-      measure_uuid: createProduct.measure_uuid,
+      measure_uuid: PersistMeasure.measure_uuid,
     };
-    
+
     return responseMeasureDto;
   }
 
@@ -46,10 +42,10 @@ export class MeasurementService {
       uploadMeasureDto,
       this.entity,
     );
-    return await this.measurementRepository.create(measureToInstance);
+    return await this.measureRepository.create(measureToInstance);
   }
 
-  async findByMonth(measure_datetime: string, measure_type: Measure_Type) {
-    return await this.findByMonth(measure_datetime, measure_type);
+  async findByMonth(uploadMeasureDto: UploadMeasureDto) {
+    return await this.measureRepository.findByMonth(uploadMeasureDto);
   }
 }
