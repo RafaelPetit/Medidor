@@ -2,8 +2,8 @@
 import { Injectable, NestMiddleware, BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { isUUID } from 'class-validator';
 import { Request, Response, NextFunction } from 'express';
-import { ConfirmMeasureDto } from 'src/dto/measure.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { ConfirmMeasureDto } from 'src/dto/measure-confirm.dto';
 
 @Injectable()
 export class MeasureConfirmValidationMiddleware implements NestMiddleware {

@@ -8,13 +8,8 @@ import {
 } from '@nestjs/common';
 import { GeminiService } from 'src/gemini/gemini.service';
 import {
-  ConfirmMeasureDto,
   CreateMeasureDto,
-  GetListDto,
   MeasureDto,
-  ResponseGetListDto,
-  ResponseMeasureDto,
-  UploadMeasureDto,
 } from '../dto/measure.dto';
 import { $Enums, Measure } from '@prisma/client';
 import { ClassConstructor } from 'class-transformer';
@@ -22,6 +17,9 @@ import { MapperService } from 'src/misc/mapper/mapper.service';
 import { MeasureRepository } from './repository/measure.repository';
 import { throwError } from 'rxjs';
 import { STATUS_CODES } from 'http';
+import { GetListDto, ResponseGetListDto } from 'src/dto/measure-list.dto';
+import { ResponseUploadMeasureDto, UploadMeasureDto } from 'src/dto/measure-upload.dto';
+import { ConfirmMeasureDto } from 'src/dto/measure-confirm.dto';
 
 @Injectable()
 export class MeasureService {
@@ -34,7 +32,7 @@ export class MeasureService {
 
   async upload(
     uploadMeasureDto: UploadMeasureDto,
-  ): Promise<ResponseMeasureDto> {
+  ): Promise<ResponseUploadMeasureDto> {
     const geminiResponse = await this.geminiService.analyzeImage(
       uploadMeasureDto.image,
     );
@@ -50,7 +48,7 @@ export class MeasureService {
 
     const persistMeasure = await this.create(createMeasureDto);
 
-    const responseMeasureDto: ResponseMeasureDto = {
+    const responseMeasureDto: ResponseUploadMeasureDto = {
       image_url: geminiResponse.image_url,
       measure_value: geminiResponse.measure_value,
       measure_uuid: persistMeasure.measure_uuid,
@@ -61,7 +59,7 @@ export class MeasureService {
 
   async create(
     createMeasureDto: CreateMeasureDto,
-  ): Promise<ResponseMeasureDto> {
+  ): Promise<ResponseUploadMeasureDto> {
     const measureToInstance = this.mapperService.toInstance(
       createMeasureDto,
       this.entity,
@@ -77,7 +75,7 @@ export class MeasureService {
     return await this.measureRepository.findByUuid(uuid);
   }
 
-  async confirm(confirmMeasureDto: ConfirmMeasureDto) {
+  async confirm(confirmMeasureDto: ConfirmMeasureDto): Promise<object> {
     const confirmedMeasure =
       await this.measureRepository.update(confirmMeasureDto);
     return {
@@ -85,7 +83,10 @@ export class MeasureService {
     };
   }
 
-  async getList(customer_code: string, measure_type?: string): Promise<ResponseGetListDto> {
+  async getList(
+    customer_code: string,
+    measure_type?: string,
+  ): Promise<ResponseGetListDto> {
     const getListDto: GetListDto = measure_type
       ? {
           customer_code,

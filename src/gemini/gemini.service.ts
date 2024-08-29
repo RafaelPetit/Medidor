@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Injectable } from '@nestjs/common';
-import { ResponseMeasureDto, UploadMeasureDto } from 'src/dto/measure.dto';
+import { ResponseUploadMeasureDto } from 'src/dto/measure-upload.dto';
 
 @Injectable()
 export class GeminiService {
@@ -48,9 +48,9 @@ export class GeminiService {
     const result = await model.generateContent([prompt, imageParts]);
     const text = result.response.text();
 
-    const responseMeasureDto: ResponseMeasureDto = JSON.parse(text);
+    const ResponseUploadMeasureDto: ResponseUploadMeasureDto = JSON.parse(text);
 
-    console.log(responseMeasureDto);
-    return responseMeasureDto;
+    console.log(ResponseUploadMeasureDto);
+    return ResponseUploadMeasureDto;
   }
 }

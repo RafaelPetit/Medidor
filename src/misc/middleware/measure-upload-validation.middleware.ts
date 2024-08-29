@@ -6,9 +6,10 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { UploadMeasureDto } from 'src/dto/measure.dto';
+import {  } from 'src/dto/measure.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { $Enums } from '@prisma/client';
+import { UploadMeasureDto } from 'src/dto/measure-upload.dto';
 
 @Injectable()
 export class MeasureUploadValidationMiddleware implements NestMiddleware {
