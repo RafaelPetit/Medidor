@@ -1,13 +1,22 @@
-import { Injectable, BadRequestException, NotFoundException, ConflictException, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+  ConflictException,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { GeminiService } from 'src/gemini/gemini.service';
 import {
   ConfirmMeasureDto,
   CreateMeasureDto,
+  GetListDto,
   MeasureDto,
+  ResponseGetListDto,
   ResponseMeasureDto,
   UploadMeasureDto,
 } from '../dto/measure.dto';
-import { Measure } from '@prisma/client';
+import { $Enums, Measure } from '@prisma/client';
 import { ClassConstructor } from 'class-transformer';
 import { MapperService } from 'src/misc/mapper/mapper.service';
 import { MeasureRepository } from './repository/measure.repository';
@@ -68,9 +77,63 @@ export class MeasureService {
   }
 
   async confirm(confirmMeasureDto: ConfirmMeasureDto) {
-      const confirmedMeasure = await this.measureRepository.update(confirmMeasureDto)
-       return {
-         sucess: confirmedMeasure.has_confirmed,
-       };
-}
+    const confirmedMeasure =
+      await this.measureRepository.update(confirmMeasureDto);
+    return {
+      sucess: confirmedMeasure.has_confirmed,
+    };
+  }
+
+  async getList(customer_code: string, measure_type?: string): Promise<any> {
+
+    if (!measure_type || !['WATER', 'GAS'].includes(measure_type.toUpperCase())) {
+      throw new BadRequestException({
+        error_code: 'INVALID_TYPE',
+        error_description: 'Tipo de medição não permitida',
+      });
+    }
+
+    const getListDto: GetListDto = measure_type
+      ? { customer_code, measure_type: measure_type as $Enums.Measure_Type }
+      : { customer_code };
+
+    const responseGetList = await this.measureRepository.getList(getListDto);
+
+    const formattedResponse =
+      await this.formatMeasuresResponse(responseGetList);
+
+    if (responseGetList.length === 0) {
+      throw new NotFoundException({
+        error_code: 'MEASURES_NOT_FOUND',
+        error_description: 'Nenhuma leitura encontrada',
+      });
+    }
+
+    return formattedResponse;
+  }
+
+  async formatMeasuresResponse(measures: MeasureDto[]) {
+    const groupedMeasures = measures.reduce((acc, measure) => {
+      const responseGetListDto: ResponseGetListDto = {
+        measure_uuid: measure.measure_uuid,
+        measure_datetime: measure.measure_datetime,
+        measure_type: measure.measure_type,
+        has_confirmed: measure.has_confirmed,
+        image_url: measure.image_url,
+      };
+
+      if (!acc[measure.customer_code]) {
+        acc[measure.customer_code] = {
+          customer_code: measure.customer_code,
+          measures: [],
+        };
+      }
+
+      acc[measure.customer_code].measures.push(responseGetListDto);
+
+      return acc;
+    }, {});
+
+    return Object.values(groupedMeasures);
+  }
 }

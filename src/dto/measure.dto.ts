@@ -75,3 +75,16 @@ export class ResponseMeasureDto {
   measure_value: number;
   measure_uuid?: string;
 }
+
+export class GetListDto {
+  customer_code: string
+  measure_type?: $Enums.Measure_Type
+}
+
+export class ResponseGetListDto {
+  measure_uuid : string
+  measure_datetime : Date
+  measure_type : string
+  has_confirmed :boolean
+  image_url: string
+}
