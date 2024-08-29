@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/misc/prisma/prisma.service';
 import { Measure, Measure_Type } from '@prisma/client';
-import { ConfirmMeasureDto, MeasureDto, ResponseMeasureDto, UploadMeasureDto } from '../../dto/measure.dto';
+import { ConfirmMeasureDto, GetListDto, MeasureDto, ResponseMeasureDto, UploadMeasureDto } from '../../dto/measure.dto';
 
 @Injectable()
 export class MeasureRepository {
@@ -27,7 +27,6 @@ export class MeasureRepository {
   async findByUuid(uuid: string) : Promise<MeasureDto> {
     return await this.prismaService.measure.findFirst({where: {measure_uuid: uuid}})
   }
-
   async update(confirmMeasureDto: ConfirmMeasureDto) {
     return await this.prismaService.measure.update({
       where: { measure_uuid: confirmMeasureDto.measure_uuid },
@@ -35,5 +34,9 @@ export class MeasureRepository {
         has_confirmed: true,
         measure_value: confirmMeasureDto.confirmed_value },
     });
+  }
+
+  async getList(getListDto: GetListDto) : Promise<MeasureDto[]> {
+    return await this.prismaService.measure.findMany({where: getListDto})
   }
 }
