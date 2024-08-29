@@ -1,13 +1,18 @@
-import {
-  Injectable,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ConflictException, HttpCode, HttpStatus } from '@nestjs/common';
 import { GeminiService } from 'src/gemini/gemini.service';
-import { CreateMeasureDto, ResponseMeasureDto, UploadMeasureDto } from '../dto/measure.dto';
-import { Measure, } from '@prisma/client';
+import {
+  ConfirmMeasureDto,
+  CreateMeasureDto,
+  MeasureDto,
+  ResponseMeasureDto,
+  UploadMeasureDto,
+} from '../dto/measure.dto';
+import { Measure } from '@prisma/client';
 import { ClassConstructor } from 'class-transformer';
 import { MapperService } from 'src/misc/mapper/mapper.service';
 import { MeasureRepository } from './repository/measure.repository';
+import { throwError } from 'rxjs';
+import { STATUS_CODES } from 'http';
 
 @Injectable()
 export class MeasureService {
@@ -33,7 +38,6 @@ export class MeasureService {
       image_url: geminiResponse.image_url,
     };
 
-
     const persistMeasure = await this.create(createMeasureDto);
 
     const responseMeasureDto: ResponseMeasureDto = {
@@ -45,7 +49,9 @@ export class MeasureService {
     return responseMeasureDto;
   }
 
-  async create(createMeasureDto: CreateMeasureDto) {
+  async create(
+    createMeasureDto: CreateMeasureDto,
+  ): Promise<ResponseMeasureDto> {
     const measureToInstance = this.mapperService.toInstance(
       createMeasureDto,
       this.entity,
@@ -53,7 +59,18 @@ export class MeasureService {
     return await this.measureRepository.create(measureToInstance);
   }
 
-  async findByMonth(uploadMeasureDto: UploadMeasureDto) {
+  async findByMonth(uploadMeasureDto: UploadMeasureDto): Promise<boolean> {
     return await this.measureRepository.findByMonth(uploadMeasureDto);
   }
+
+  async findByUuid(uuid: string): Promise<MeasureDto> {
+    return await this.measureRepository.findByUuid(uuid);
+  }
+
+  async confirm(confirmMeasureDto: ConfirmMeasureDto) {
+      const confirmedMeasure = await this.measureRepository.update(confirmMeasureDto)
+       return {
+         sucess: confirmedMeasure.has_confirmed,
+       };
+}
 }

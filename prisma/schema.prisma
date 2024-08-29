@@ -8,13 +8,13 @@ datasource db {
 }
 
 model Measure {
-  id               Int           @id @default(autoincrement())
-  measure_uuid     String        @unique @default(uuid())
+  id               Int          @id @default(autoincrement())
+  measure_uuid     String       @unique @default(uuid())
   customer_code    String
   measure_datetime DateTime
   measure_type     Measure_Type
   measure_value    Float
-  has_confirmed    Boolean       @default(false)
+  has_confirmed    Boolean      @default(false)
   image_url        String
 }
 
@@ -22,4 +22,3 @@ enum Measure_Type {
   WATER
   GAS
 }
-

@@ -1,5 +1,15 @@
-import { Measure_Type } from "@prisma/client";
-import { IsBase64, IsDateString, IsEnum, IsInt, IsNotEmpty, IsString } from "class-validator";
+import { HttpCode } from '@nestjs/common';
+import { $Enums, Measure_Type } from '@prisma/client';
+import {
+  IsBase64,
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class UploadMeasureDto {
   @IsString({ message: 'image must be a string' })
@@ -39,17 +49,29 @@ export class CreateMeasureDto {
 }
 
 export class ConfirmMeasureDto {
-  @IsString({ message: 'measureUuid must be a string' })
-  @IsNotEmpty({ message: 'measureUuid must not be empty ' })
+  @IsString({ message: 'measure_uuid must be a string' })
+  @IsNotEmpty({ message: 'measure_uuid must not be empty ' })
   measure_uuid: string;
 
-  @IsInt({ message: 'confirmedValue must be a int' })
+  @IsInt({ message: 'confirmedValue must be a int'})
+  @IsNumber({ maxDecimalPlaces:2, allowInfinity: false, allowNaN: false})
   @IsNotEmpty({ message: 'confirmedValue must not be empty ' })
   confirmed_value: number;
 }
 
+export class MeasureDto {
+  id: number;
+  measure_uuid: string;
+  customer_code: string;
+  measure_datetime: Date;
+  measure_type: $Enums.Measure_Type;
+  measure_value: number;
+  has_confirmed: boolean;
+  image_url: string;
+}
+
 export class ResponseMeasureDto {
-  image_url: string
-  measure_value: number
-  measure_uuid?: string
+  image_url: string;
+  measure_value: number;
+  measure_uuid?: string;
 }
