@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/misc/prisma/prisma.service';
-import { Measure, Measure_Type } from '@prisma/client';
+import { $Enums, Measure, Measure_Type } from '@prisma/client';
 import { ConfirmMeasureDto, GetListDto, MeasureDto, ResponseMeasureDto, UploadMeasureDto } from '../../dto/measure.dto';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class MeasureRepository {
     return await this.prismaService.measure.findFirst({
       where: {
         measure_datetime: uploadMeasureDto.measure_datetime,
-        measure_type: uploadMeasureDto.measure_type,
+        measure_type: uploadMeasureDto.measure_type .toLocaleUpperCase() as $Enums.Measure_Type,
       },
     })
       ? true
@@ -32,7 +32,7 @@ export class MeasureRepository {
       where: { measure_uuid: confirmMeasureDto.measure_uuid },
       data: { 
         has_confirmed: true,
-        measure_value: confirmMeasureDto.confirmed_value },
+        measure_value: confirmMeasureDto.confirmed_value},
     });
   }
 

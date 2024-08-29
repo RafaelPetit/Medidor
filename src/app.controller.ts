@@ -26,7 +26,7 @@ export class AppController {
   }
 
   @Get(':customer_code/list')
-  async getlist(
+  async getlist (
     @Param('customer_code') customer_code: string,
     @Query('measure_type') measure_type?: string,
   ) {

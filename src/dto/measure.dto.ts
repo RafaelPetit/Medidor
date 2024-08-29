@@ -25,9 +25,9 @@ export class UploadMeasureDto {
   @IsNotEmpty({ message: 'measurementDatetime must not be empty ' })
   measure_datetime: string;
 
-  @IsEnum(Measure_Type)
+  // @IsEnum(Measure_Type)
   @IsNotEmpty({ message: 'measurementType must not be empty ' })
-  measure_type: Measure_Type;
+  measure_type: string;
 }
 
 export class CreateMeasureDto {
@@ -81,10 +81,15 @@ export class GetListDto {
   measure_type?: $Enums.Measure_Type
 }
 
-export class ResponseGetListDto {
-  measure_uuid : string
-  measure_datetime : Date
-  measure_type : string
-  has_confirmed :boolean
-  image_url: string
+
+export interface ResponseGetListDto {
+  customer_code: string;
+  measures: {
+    measure_uuid: string;
+    measure_datetime: Date;
+    measure_type: string;
+    has_confirmed: boolean;
+    image_url: string;
+  }[]; 
 }
+

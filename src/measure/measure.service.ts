@@ -42,7 +42,8 @@ export class MeasureService {
     const createMeasureDto: CreateMeasureDto = {
       customer_code: uploadMeasureDto.customer_code,
       measure_datetime: uploadMeasureDto.measure_datetime,
-      measure_type: uploadMeasureDto.measure_type,
+      measure_type:
+        uploadMeasureDto.measure_type.toUpperCase() as $Enums.Measure_Type,
       measure_value: geminiResponse.measure_value,
       image_url: geminiResponse.image_url,
     };
@@ -84,17 +85,12 @@ export class MeasureService {
     };
   }
 
-  async getList(customer_code: string, measure_type?: string): Promise<any> {
-
-    if (!measure_type || !['WATER', 'GAS'].includes(measure_type.toUpperCase())) {
-      throw new BadRequestException({
-        error_code: 'INVALID_TYPE',
-        error_description: 'Tipo de medição não permitida',
-      });
-    }
-
+  async getList(customer_code: string, measure_type?: string): Promise<ResponseGetListDto> {
     const getListDto: GetListDto = measure_type
-      ? { customer_code, measure_type: measure_type as $Enums.Measure_Type }
+      ? {
+          customer_code,
+          measure_type: measure_type.toUpperCase() as $Enums.Measure_Type,
+        }
       : { customer_code };
 
     const responseGetList = await this.measureRepository.getList(getListDto);
@@ -112,28 +108,28 @@ export class MeasureService {
     return formattedResponse;
   }
 
-  async formatMeasuresResponse(measures: MeasureDto[]) {
-    const groupedMeasures = measures.reduce((acc, measure) => {
-      const responseGetListDto: ResponseGetListDto = {
-        measure_uuid: measure.measure_uuid,
-        measure_datetime: measure.measure_datetime,
-        measure_type: measure.measure_type,
-        has_confirmed: measure.has_confirmed,
-        image_url: measure.image_url,
-      };
-
-      if (!acc[measure.customer_code]) {
-        acc[measure.customer_code] = {
-          customer_code: measure.customer_code,
-          measures: [],
+  async formatMeasuresResponse(
+    measures: MeasureDto[],
+  ): Promise<ResponseGetListDto> {
+    const groupedMeasures = measures.reduce(
+      (acc, measure) => {
+        const responseGetListDto = {
+          measure_uuid: measure.measure_uuid,
+          measure_datetime: measure.measure_datetime,
+          measure_type: measure.measure_type,
+          has_confirmed: measure.has_confirmed,
+          image_url: measure.image_url,
         };
-      }
 
-      acc[measure.customer_code].measures.push(responseGetListDto);
+        if (!acc.customer_code) {
+          acc.customer_code = measure.customer_code;
+        }
 
-      return acc;
-    }, {});
-
-    return Object.values(groupedMeasures);
+        acc.measures.push(responseGetListDto);
+        return acc;
+      },
+      { customer_code: '', measures: [] } as ResponseGetListDto,
+    );
+    return groupedMeasures;
   }
 }

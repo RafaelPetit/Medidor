@@ -8,6 +8,7 @@ import {
 import { Request, Response, NextFunction } from 'express';
 import { UploadMeasureDto } from 'src/dto/measure.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { $Enums } from '@prisma/client';
 
 @Injectable()
 export class MeasureUploadValidationMiddleware implements NestMiddleware {
@@ -67,7 +68,7 @@ export class MeasureUploadValidationMiddleware implements NestMiddleware {
     const existingMeasure = await this.prisma.measure.findFirst({
       where: {
         measure_datetime: uploadMeasureDto.measure_datetime,
-        measure_type: uploadMeasureDto.measure_type
+        measure_type: uploadMeasureDto.measure_type.toUpperCase() as $Enums.Measure_Type
       },
     });
     return existingMeasure ? true : false;
