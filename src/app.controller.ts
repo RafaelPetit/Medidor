@@ -102,17 +102,7 @@ export class AppController {
   @ApiResponse({
     status: 200,
     description: 'Operação realizada com sucesso',
-    schema: {
-      example: {
-        customer_code: 'teste',
-        measures: '[]',
-        measure_uuid: '5cac754e-1884-4c14-aeed-f1111e49f06e',
-        measure_datetime: '2024-08-28T00:00:00.000Z',
-        measure_type: 'GAS',
-        has_confirmed: 'true',
-        image_url: 'https://i.imgur.com/74rQm9m.jpg',
-      },
-    },
+    type: ResponseGetListDto
   })
   @ApiResponse({
     status: 400,
