@@ -2,18 +2,22 @@ import { ApiProperty } from "@nestjs/swagger";
 import { $Enums } from "@prisma/client";
 
 export class GetListDto {
-  @ApiProperty({ description: 'Customer code for fetching the measures' })
+  @ApiProperty({
+    description: 'Código do cliente para buscar as medições',
+    example: 'cliente123',
+  })
   customer_code: string;
 
   @ApiProperty({
     enum: $Enums.Measure_Type,
-    description: 'Optional type of the measure to filter by',
+    description: 'Tipo opcional da medição para filtrar',
     required: false,
+    example: 'WATER',
   })
   measure_type?: $Enums.Measure_Type;
 }
 
-export interface ResponseGetListDto {
+export class ResponseGetListDto {
   customer_code: string;
   measures: {
     measure_uuid: string;
