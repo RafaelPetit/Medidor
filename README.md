@@ -1,85 +1,45 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 📏 API de Medições
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Uma API robusta para gerenciar medições de clientes, incluindo upload de medições, confirmação de valores e listagem de medições. Construída com NestJS e Prisma ORM, a API segue as melhores práticas de desenvolvimento e oferece uma documentação completa com Swagger e integração com Google Gemini.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Funcionalidades Principais
 
-## Description
+- **Upload de Medições**: Permite o upload de medições associadas a imagens, tendo o valor da imagem extraido com o google Gemini e assim registrando dados de forma segura e precisa.
+- **Confirmação de Medições**: Confirmação dos valores de medições para validação de dados.
+- **Listagem de Medições**: Filtragem de medições por cliente e tipo, com resposta formatada de forma intuitiva e organizada.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠️ Tecnologias Utilizadas
 
-## Project setup
+- **NestJS**: Framework Node.js para construir aplicações server-side escaláveis e eficientes.
+- **Prisma ORM**: Abstração para banco de dados, garantindo operações seguras e otimizadas.
+- **Swagger**: Documentação interativa para APIs, facilitando testes e integrações.
+- **Docker**: Facilita a configuração e implantação da aplicação.
+- **Google Gemini**: Integração com API do Gemini
 
-```bash
-$ npm install
-```
+## 📝 Vantagens do Projeto
 
-## Compile and run the project
+- **Escalabilidade**: Estrutura modular que permite fácil expansão e manutenção.
+- **Segurança**: Validações rigorosas e uso de DTOs para garantir a integridade dos dados.
+- **Facilidade de Integração**: Documentação detalhada com Swagger, permitindo que desenvolvedores compreendam rapidamente o funcionamento da API.
+- **Flexibilidade**: Filtragem de dados para atender diferentes necessidades de negócio.
 
-```bash
-# development
-$ npm run start
+## 📋 Endpoints
 
-# watch mode
-$ npm run start:dev
+1. **POST /upload**  
+   Realiza o upload de uma nova medição associada a um cliente.  
+   Requisição inclui imagem em base64, tipo de medição, código do cliente e data.
 
-# production mode
-$ npm run start:prod
-```
+2. **PATCH /confirm**  
+   Confirma ou ajusta o valor de uma medição existente.
 
-## Run tests
+3. **GET /{customer_code}/list**  
+   Lista medições por cliente, com opção de filtrar por tipo.
 
-```bash
-# unit tests
-$ npm run test
+## 📖 Documentação
 
-# e2e tests
-$ npm run test:e2e
+- Toda a API é documentada com Swagger, acessível via `/swagger`, proporcionando uma interface interativa para explorar e testar os endpoints.
 
-# test coverage
-$ npm run test:cov
-```
+## 🛡️ Boas Práticas
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **Uso de Middlewares**: Para validações e filtragens automáticas, otimizando o desempenho e garantindo segurança.
+- **Validação de Dados**: DTOs completos com exemplos para validações e garantia de formato correto dos dados recebidos.
