@@ -1,12 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Body, Controller, Post } from '@nestjs/common';
+import { UploadMeasureDto } from './dto/measure.dto';
+import { MeasureService } from './measure/measure.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+    constructor(private readonly measureService: MeasureService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+    @Post('upload')
+    async upload (@Body() uploadMeasureDto: UploadMeasureDto) {
+        return await this.measureService.upload(uploadMeasureDto)
+    }
 }
