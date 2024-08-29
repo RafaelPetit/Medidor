@@ -1,9 +1,9 @@
 // src/middleware/measureValidation.middleware.ts
 import { Injectable, NestMiddleware, BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
-import { isUUID } from 'class-validator';
+import { isNumber, isUUID } from 'class-validator';
 import { Request, Response, NextFunction } from 'express';
-import { ConfirmMeasureDto } from 'src/dto/measure.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { ConfirmMeasureDto } from 'src/dto/measure-confirm.dto';
 
 @Injectable()
 export class MeasureConfirmValidationMiddleware implements NestMiddleware {
@@ -19,7 +19,10 @@ export class MeasureConfirmValidationMiddleware implements NestMiddleware {
       });
     }
 
-    if (!Number(confirmMeasureDto.confirmed_value)) {
+    if (
+      !isNumber(confirmMeasureDto.confirmed_value) ||
+      !/^\d+(\.\d{1,2})?$/.test(confirmMeasureDto.confirmed_value.toString())
+    ) {
       throw new BadRequestException({
         error_code: 'INVALID_DATA',
         error_description: 'confirmed_value fornecido não é valido.',

@@ -1,35 +1,155 @@
-import { Body, Controller, Get, Header, Param, Patch, Post, Query } from '@nestjs/common';
 import {
-  ConfirmMeasureDto,
-  ResponseMeasureDto,
-  UploadMeasureDto,
-} from './dto/measure.dto';
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import {} from './dto/measure.dto';
 import { MeasureService } from './measure/measure.service';
-import { ApiTags } from '@nestjs/swagger';
-import { $Enums } from '@prisma/client';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ResponseGetListDto } from './dto/measure-list.dto';
+import {
+  ResponseUploadMeasureDto,
+  UploadMeasureDto,
+} from './dto/measure-upload.dto';
+import { ConfirmMeasureDto } from './dto/measure-confirm.dto';
 
-@ApiTags('app')
+@ApiTags('medidor')
 @Controller()
 export class AppController {
   constructor(private readonly measureService: MeasureService) {}
 
   @Post('upload')
+  @ApiResponse({
+    status: 200,
+    description: 'Operação realizada com sucesso',
+    type: ResponseUploadMeasureDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Os dados fornecidos no corpo da requisição são inválidos',
+    schema: {
+      example: {
+        error_code: 'INVALID_DATA',
+        error_description: 'Descrição do erro',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Já existe uma leitura para este tipo no mês atual',
+    schema: {
+      example: {
+        error_code: 'DOUBLE_REPORT',
+        error_description: 'Leitura do mês já realizada',
+      },
+    },
+  })
   async upload(
     @Body() uploadMeasureDto: UploadMeasureDto,
-  ): Promise<ResponseMeasureDto> {
+  ): Promise<ResponseUploadMeasureDto> {
     return await this.measureService.upload(uploadMeasureDto);
   }
 
   @Patch('confirm')
-  async confirm(@Body() confirmMeasureDto: ConfirmMeasureDto) {
+  @ApiResponse({
+    status: 200,
+    description: 'Operação realizada com sucesso',
+    schema: {
+      example: {
+        success: true,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Os dados fornecidos no corpo da requisição são inválidos',
+    schema: {
+      example: {
+        error_code: 'INVALID_DATA',
+        error_description: 'Descrição do erro',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Leitura não encontrada',
+    schema: {
+      example: {
+        error_code: 'MEASURE_NOT_FOUND',
+        error_description: 'Leitura do mês já realizada',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Leitura já confirmada',
+    schema: {
+      example: {
+        error_code: 'CONFIRMATION_DUPLICATE',
+        error_description: 'Leitura do mês já realizada',
+      },
+    },
+  })
+  async confirm(@Body() confirmMeasureDto: ConfirmMeasureDto): Promise<object> {
     return await this.measureService.confirm(confirmMeasureDto);
   }
 
   @Get(':customer_code/list')
+  @ApiResponse({
+    status: 200,
+    description: 'Operação realizada com sucesso',
+    schema: {
+      example: {
+        customer_code: 'teste',
+        measures: '[]',
+        measure_uuid: '5cac754e-1884-4c14-aeed-f1111e49f06e',
+        measure_datetime: '2024-08-28T00:00:00.000Z',
+        measure_type: 'GAS',
+        has_confirmed: 'true',
+        image_url: 'https://i.imgur.com/74rQm9m.jpg',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Parâmetro measure type diferente de WATER ou GAS',
+    schema: {
+      example: {
+        error_code: 'INVALID_TYPE',
+        error_description: 'Tipo de medição não permitida',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Nenhum registro encontrado',
+    schema: {
+      example: {
+        error_code: 'MEASURES_NOT_FOUND',
+        error_description: 'Nenhuma leitura encontrada',
+      },
+    },
+  })
+  @ApiParam({
+    name: 'customer_code',
+    description: 'Código do cliente para filtrar as medidas',
+    type: String,
+  })
+  @ApiQuery({
+    name: 'measure_type',
+    description: 'Tipo da medida (WATER ou GAS)',
+    required: false,
+    enum: ['WATER', 'GAS'],
+    example: 'WATER',
+  })
   async getlist(
     @Param('customer_code') customer_code: string,
     @Query('measure_type') measure_type?: string,
-  ) {
-    return this.measureService.getList(customer_code, measure_type)
+  ): Promise<ResponseGetListDto> {
+    return this.measureService.getList(customer_code, measure_type);
   }
 }

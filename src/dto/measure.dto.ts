@@ -1,90 +1,78 @@
-import { HttpCode } from '@nestjs/common';
-import { $Enums, Measure_Type } from '@prisma/client';
-import {
-  IsBase64,
-  IsDateString,
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  IsUUID,
-} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { $Enums, } from '@prisma/client';
 
-export class UploadMeasureDto {
-  @IsString({ message: 'image must be a string' })
-  @IsNotEmpty({ message: 'image must not be empty ' })
-  @IsBase64()
-  image: string;
 
-  @IsString({ message: 'customerCode must be a string' })
-  @IsNotEmpty({ message: 'customerCode must not be empty ' })
+export class MeasureDto {
+  @ApiProperty({ description: 'Identificador único da medição', example: 1 })
+  id: number;
+
+  @ApiProperty({
+    description: 'UUID da medição',
+    example: '7c37cce3-c79a-4822-9be7-781b0bb0e986',
+  })
+  measure_uuid: string;
+
+  @ApiProperty({
+    description: 'Código do cliente associado à medição',
+    example: 'cliente123',
+  })
   customer_code: string;
 
-  @IsDateString()
-  @IsNotEmpty({ message: 'measurementDatetime must not be empty ' })
-  measure_datetime: string;
+  @ApiProperty({
+    description: 'Data e hora da medição',
+    example: '2024-08-29T00:00:00Z',
+  })
+  measure_datetime: Date;
 
-  @IsEnum(Measure_Type)
-  @IsNotEmpty({ message: 'measurementType must not be empty ' })
-  measure_type: Measure_Type;
+  @ApiProperty({
+    enum: $Enums.Measure_Type,
+    description: 'Tipo da medição',
+    example: 'WATER',
+  })
+  measure_type: $Enums.Measure_Type;
+
+  @ApiProperty({ description: 'Valor da medição', example: 100.5 })
+  measure_value: number;
+
+  @ApiProperty({
+    description: 'Indica se a medição foi confirmada',
+    example: true,
+  })
+  has_confirmed: boolean;
+
+  @ApiProperty({
+    description: 'URL da imagem associada à medição',
+    example: 'https://i.imgur.com/jJ5mE8B.jpg',
+  })
+  image_url: string;
 }
 
 export class CreateMeasureDto {
-  @IsString({ message: 'customerCode must be a string' })
-  @IsNotEmpty({ message: 'customerCode must not be empty ' })
+  @ApiProperty({
+    description: 'Código do cliente associado à medição',
+    example: 'cliente123',
+  })
   customer_code: string;
 
-  @IsDateString()
-  @IsNotEmpty({ message: 'measurementDatetime must not be empty ' })
+  @ApiProperty({
+    description: 'Data e hora da medição no formato ISO',
+    example: '2024-08-29T00:00:00Z',
+  })
   measure_datetime: string;
 
-  @IsEnum(Measure_Type)
-  @IsNotEmpty({ message: 'measurementType must not be empty ' })
-  measure_type: Measure_Type;
-
-  measure_value: number;
-
-  image_url: string;
-}
-
-export class ConfirmMeasureDto {
-  @IsString({ message: 'measure_uuid must be a string' })
-  @IsNotEmpty({ message: 'measure_uuid must not be empty ' })
-  measure_uuid: string;
-
-  @IsInt({ message: 'confirmedValue must be a int'})
-  @IsNumber({ maxDecimalPlaces:2, allowInfinity: false, allowNaN: false})
-  @IsNotEmpty({ message: 'confirmedValue must not be empty ' })
-  confirmed_value: number;
-}
-
-export class MeasureDto {
-  id: number;
-  measure_uuid: string;
-  customer_code: string;
-  measure_datetime: Date;
+  @ApiProperty({
+    enum: $Enums.Measure_Type,
+    description: 'Tipo da medição, por exemplo, WATER ou GAS',
+    example: 'WATER',
+  })
   measure_type: $Enums.Measure_Type;
+
+  @ApiProperty({ description: 'Valor da medição', example: 100.5 })
   measure_value: number;
-  has_confirmed: boolean;
+
+  @ApiProperty({
+    description: 'URL da imagem associada à medição',
+    example: 'https://i.imgur.com/jJ5mE8B.jpg',
+  })
   image_url: string;
-}
-
-export class ResponseMeasureDto {
-  image_url: string;
-  measure_value: number;
-  measure_uuid?: string;
-}
-
-export class GetListDto {
-  customer_code: string
-  measure_type?: $Enums.Measure_Type
-}
-
-export class ResponseGetListDto {
-  measure_uuid : string
-  measure_datetime : Date
-  measure_type : string
-  has_confirmed :boolean
-  image_url: string
 }
