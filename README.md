@@ -84,6 +84,17 @@ Para rodar o projeto localmente, siga os passos abaixo:
    
    A aplicação estará disponível na URL `http://localhost:3000`. A documentação Swagger pode ser acessada em `http://localhost:3000/swagger`.
 
+6. **Acessar o banco de dados com pgAdmin4**
+
+   O projeto inclui uma camada adicional com o banco de dados em núvem acessível via pgAdmin4. Acesse o pgAdmin4 através do link após a inicialização do docker:
+
+   http://localhost:5050/login?next=/browser/
+
+   Use as credenciais abaixo para login:
+
+   - **Email:** admin@admin.com
+   - **Senha:** pgadmin4
+
 7. **Parar o container**
    
    Para parar o container, utilize:
