@@ -8,8 +8,8 @@ import {
 import { Request, Response, NextFunction } from 'express';
 import {  } from 'src/dto/measure.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { $Enums } from '@prisma/client';
 import { UploadMeasureDto } from 'src/dto/measure-upload.dto';
+import { $Enums } from '@prisma/client';
 
 @Injectable()
 export class MeasureUploadValidationMiddleware implements NestMiddleware {

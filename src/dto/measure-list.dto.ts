@@ -17,20 +17,6 @@ export class GetListDto {
   measure_type?: $Enums.Measure_Type;
 }
 
-// export class ResponseGetListDto {
-//   customer_code: string;
-//   measures: {
-//     measure_uuid: string;
-
-//     measure_datetime: Date;
-
-//     measure_type: string;
-
-//     has_confirmed: boolean;
-
-//     image_url: string;
-//   }[];
-
 export class MeasureItemDto {
   @ApiProperty({
     description: 'UUID da medição',

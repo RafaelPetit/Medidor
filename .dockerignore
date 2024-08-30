@@ -1,9 +1,8 @@
 node_modules
-test
 .gitignore
 .git
-.prettierrc
-DockerFile
-.env
 dist
 README.md
+DockerFile
+.Dockerignore
+npm-debug.log
