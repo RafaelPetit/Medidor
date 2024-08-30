@@ -1,10 +1,6 @@
 import {
   Injectable,
-  BadRequestException,
   NotFoundException,
-  ConflictException,
-  HttpCode,
-  HttpStatus,
 } from '@nestjs/common';
 import { GeminiService } from 'src/gemini/gemini.service';
 import {
@@ -15,8 +11,6 @@ import { $Enums, Measure } from '@prisma/client';
 import { ClassConstructor } from 'class-transformer';
 import { MapperService } from 'src/misc/mapper/mapper.service';
 import { MeasureRepository } from './repository/measure.repository';
-import { throwError } from 'rxjs';
-import { STATUS_CODES } from 'http';
 import { GetListDto, ResponseGetListDto } from 'src/dto/measure-list.dto';
 import { ResponseUploadMeasureDto, UploadMeasureDto } from 'src/dto/measure-upload.dto';
 import { ConfirmMeasureDto } from 'src/dto/measure-confirm.dto';
@@ -96,8 +90,6 @@ export class MeasureService {
 
     const responseGetList = await this.measureRepository.getList(getListDto);
 
-    const formattedResponse =
-      await this.formatMeasuresResponse(responseGetList);
 
     if (responseGetList.length === 0) {
       throw new NotFoundException({
@@ -105,32 +97,7 @@ export class MeasureService {
         error_description: 'Nenhuma leitura encontrada',
       });
     }
-
-    return formattedResponse;
-  }
-
-  async formatMeasuresResponse(
-    measures: MeasureDto[],
-  ): Promise<ResponseGetListDto> {
-    const groupedMeasures = measures.reduce(
-      (acc, measure) => {
-        const responseGetListDto = {
-          measure_uuid: measure.measure_uuid,
-          measure_datetime: measure.measure_datetime,
-          measure_type: measure.measure_type,
-          has_confirmed: measure.has_confirmed,
-          image_url: measure.image_url,
-        };
-
-        if (!acc.customer_code) {
-          acc.customer_code = measure.customer_code;
-        }
-
-        acc.measures.push(responseGetListDto);
-        return acc;
-      },
-      { customer_code: '', measures: [] } as ResponseGetListDto,
-    );
-    return groupedMeasures;
+    
+    return await this.mapperService.formatMeasuresResponse(responseGetList);
   }
 }

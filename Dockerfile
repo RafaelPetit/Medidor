@@ -1,15 +1,16 @@
 FROM node:20
 
-WORKDIR /usr/src/app
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
 
 COPY . .
-COPY ./.env.production ./.env
 
-RUN npm install --quiet --no-optional --no-fund --loglevel=error
+RUN npx prisma generate
 
 RUN npm run build
-
-RUN rm -rf ./src
 
 EXPOSE 3000
 

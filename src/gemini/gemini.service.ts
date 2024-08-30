@@ -4,7 +4,7 @@ import { ResponseUploadMeasureDto } from 'src/dto/measure-upload.dto';
 
 @Injectable()
 export class GeminiService {
-  private readonly genAI = new GoogleGenerativeAI(process.env.API_KEY);
+  private readonly genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
   async fileToGenerativePart(image, mimeType) {
     return {
@@ -50,7 +50,6 @@ export class GeminiService {
 
     const ResponseUploadMeasureDto: ResponseUploadMeasureDto = JSON.parse(text);
 
-    console.log(ResponseUploadMeasureDto);
     return ResponseUploadMeasureDto;
   }
 }

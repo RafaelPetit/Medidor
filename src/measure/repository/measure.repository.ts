@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/misc/prisma/prisma.service';
-import { $Enums, Measure, Measure_Type } from '@prisma/client';
+import { $Enums, Measure } from '@prisma/client';
 import {
   MeasureDto,
 } from '../../dto/measure.dto';
