@@ -43,3 +43,51 @@ Uma API robusta para gerenciar medições de clientes, incluindo upload de medi�
 
 - **Uso de Middlewares**: Para validações e filtragens automáticas, otimizando o desempenho e garantindo segurança.
 - **Validação de Dados**: DTOs completos com exemplos para validações e garantia de formato correto dos dados recebidos.
+
+
+## ⚙️ Como Rodar o Projeto
+
+Para rodar o projeto localmente, siga os passos abaixo:
+
+1. **Instalar o Node.js**
+
+   Certifique-se de ter o Node.js instalado em sua máquina. Você pode fazer o download e instalação a partir do [site oficial do Node.js](https://nodejs.org/).
+
+2. **Configurar o arquivo `.env`**
+
+   Crie um arquivo `.env` na raiz do projeto com o seguinte formato e ajuste conforme necessário:
+    ```bach
+   GEMINI_API_KEY="sua chave da api"
+   DATABASE_URL="postgresql://usuario:senha@localhost:5432/db"
+   POSTGRES_USER="usuario"
+   POSTGRES_PASSWORD="senha"
+   POSTGRES_DB="db"
+    ```
+
+   Certifique-se de substituir os valores com as credenciais e chaves corretas para seu ambiente.
+
+3. **Instalar as dependências**
+
+   No diretório do projeto, execute o seguinte comando para instalar todas as dependências necessárias:
+
+   ```bash
+   npm install
+   ```
+
+5. **Rodar o projeto com Docker**
+
+   Se preferir rodar o projeto utilizando Docker, execute o comando abaixo para construir e iniciar os containers:
+   
+   ```bash
+   docker-compose up --build
+    ```
+   
+   A aplicação estará disponível na URL `http://localhost:3000`. A documentação Swagger pode ser acessada em `http://localhost:3000/swagger`.
+
+7. **Parar o container**
+   
+   Para parar o container, utilize:
+
+    ```
+   docker-compose down
+    ```
